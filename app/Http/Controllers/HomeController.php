@@ -87,7 +87,7 @@ class HomeController extends Controller
 
         //buat kondisi apakah variabel $foto_barang terisi file atau tidak
         if($foto_barang){ //jika variabel $foto_barang terisi
-            
+
             //maka kita akan mengambil nama file nya
             $thumb = $foto_barang->getClientOriginalName();
 
@@ -111,6 +111,33 @@ class HomeController extends Controller
             return redirect('barang');
         }else{
             echo "Barang tidak dapat diubah";
+            return redirect('barang');
+        }
+    }
+
+    function hapusBarang(Request $request){
+        //buat variabel id barang untuk menangkap id barang
+        $barang_id = $request->input('barang_id');
+        //lakukan query untuk mencari data dari id barang yang dimaksud
+        $brg = Barang::where('barang_id',$barang_id)->first();
+
+        //tulis jalur foto barang yang sudah dibuat dalam function edit dan tambah
+        $path = public_path() . '/foto_barang';
+
+        //ambil data foto barang
+        $foto = $brg->foto_barang;
+
+        if($brg){ //jika barang ada
+            $brg->delete(); //maka kita pakai fungsi bawaan dari laravel untuk hapus barang
+
+            File::delete($path . '/' . $foto); //dan kita juga akan menghapus foto dari barang tersebut
+
+            return redirect('barang'); //kembalikan ke halaman daftar barang
+        }else{ //jika tidak ada
+            //kita akan memberikan peringatan
+            echo "Barang tidak ada!";
+
+            //lalu kembalikan lagi ke daftar barang
             return redirect('barang');
         }
     }

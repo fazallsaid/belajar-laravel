@@ -22,7 +22,13 @@
                         <p class="card-text">{{$brg->deskripsi}}</p>
                         <p class="card-text">{{$brg->harga}}</p>
                         <a href="#" class="btn btn-primary">Detail</a>
-                        <a href="{{url('/barang/edit/' . $brg->id_barang)}}" class="btn btn-success">Edit</a>
+                        <a href="{{url('/barang/edit/' . $brg->barang_id)}}" class="btn btn-success">Edit</a>
+                        <form action="{{url('barang/delete')}}" method="POST">
+                            @method('DELETE')
+                            @csrf
+                            <input type="hidden" name="barang_id" value="{{$brg->barang_id}}">
+                            <button type="submit" class="btn btn-danger">Hapus</button>
+                         </form>
                     </div>
                 </div>
             </div>
