@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Admin;
 use App\Models\Barang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -14,7 +15,25 @@ class HomeController extends Controller
 
     public function tampilBarang(){
         $barang = Barang::all();
-        return view('barang', compact('barang'));
+
+        //tambahkan variabel baru untuk menambahkan sesi
+        $sesi = session('admin');
+        $adm = session('id_admin');
+
+        //cari apakah id_admin ada di database
+        $admin = Admin::where('id_admin', $adm)->first();
+
+        //buat kondisi
+        //jika sesi masih ada
+        if($sesi==true){
+
+            //arahkan ke view barang
+         return view('barang', compact('barang','admin'));
+        }else{ //jika sudah habis
+
+            //arahkan kembali ke login
+            return redirect('login');
+        }
     }
 
     public function tambahBarang(){

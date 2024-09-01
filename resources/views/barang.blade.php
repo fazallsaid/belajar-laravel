@@ -9,6 +9,8 @@
 <body>
     <div class="container">
         <div class="row">
+            <h3>Halo {{$admin->nama_admin}}! <a href="{{url('/logout')}}">Logout</a></h3>
+            <a href="{{url('/barang/tambah')}}" class="btn btn-success mb-5">Tambah Barang</a>
             @forelse($barang as $brg)
             <div class="col-md-4">
                 <div class="card">
