@@ -9,7 +9,7 @@
 <body>
     <div class="container">
         <div class="row">
-            <h3>Halo {{$admin->nama_admin}}! <a href="{{url('/logout')}}">Logout</a></h3>
+            {{-- <h3>Halo {{$admin->nama_admin}}! <a href="{{url('/logout')}}">Logout</a></h3> --}}
             <a href="{{url('/barang/tambah')}}" class="btn btn-success mb-5">Tambah Barang</a>
             @forelse($barang as $brg)
             <div class="col-md-4">
@@ -24,12 +24,18 @@
                         <p class="card-text">{{$brg->deskripsi}}</p>
                         <p class="card-text">{{$brg->harga}}</p>
                         <a href="#" class="btn btn-primary">Detail</a>
-                        <a href="{{url('/barang/edit/' . $brg->barang_id)}}" class="btn btn-success">Edit</a>
+                        {{-- <a href="{{url('/barang/edit/' . $brg->barang_id)}}" class="btn btn-success">Edit</a>
                         <form action="{{url('barang/delete')}}" method="POST">
                             @method('DELETE')
                             @csrf
                             <input type="hidden" name="barang_id" value="{{$brg->barang_id}}">
                             <button type="submit" class="btn btn-danger">Hapus</button>
+                         </form> --}}
+                         <form action="{{url('cart/process')}}" method="POST">
+                            @csrf
+                            <input type="hidden" name="barang_id" value="{{$brg->barang_id}}">
+                            <input type="hidden" name="qty" value="1">
+                            <button type="submit" class="btn btn-success">Tambah Ke Keranjang</button>
                          </form>
                     </div>
                 </div>

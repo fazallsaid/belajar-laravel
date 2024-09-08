@@ -34,43 +34,43 @@ class AuthController extends Controller
         }
     }
 
-    // public function register(){
-    //     return view('register');
-    // }
+    public function register(){
+        return view('register');
+    }
 
-    // function reg(Request $request){
-    //     //buat variabel untuk mendapatkan value dari form
-    //     $email = htmlspecialchars($request->input('email'));
-    //     $password = htmlspecialchars($request->input('password'));
-    //     $nama_admin = htmlspecialchars($request->input('nama_admin'));
+    function reg(Request $request){
+        //buat variabel untuk mendapatkan value dari form
+        $email = htmlspecialchars($request->input('email'));
+        $password = htmlspecialchars($request->input('password'));
+        $nama_admin = htmlspecialchars($request->input('nama_admin'));
 
-    //     //enkripsi password agar tidak mudah dikenali
-    //     $HashedPass = Hash::make($password);
+        //enkripsi password agar tidak mudah dikenali
+        $HashedPass = Hash::make($password);
 
-    //     //inisialisasi model untuk proses register
-    //     $admin = new Admin;
+        //inisialisasi model untuk proses register
+        $admin = new Admin;
 
-    //     //pasangkan variabel email, password dan nama admin
-    //     //sesuai dengan fieldnya
-    //     $admin->email = $email;
+        //pasangkan variabel email, password dan nama admin
+        //sesuai dengan fieldnya
+        $admin->email = $email;
 
-    //     //khusus password, pasangkan dengan variabel HashedPass
-    //     $admin->password = $HashedPass;
+        //khusus password, pasangkan dengan variabel HashedPass
+        $admin->password = $HashedPass;
 
-    //     $admin->nama_admin = $nama_admin;
-    //     $admin->save();
+        $admin->nama_admin = $nama_admin;
+        $admin->save();
 
-    //     //kembalikan ke halaman login
-    //     return redirect('login');
-    // }
+        //kembalikan ke halaman login
+        return redirect('login');
+    }
 
-// public function logout(Request $request)
-// {
-//     // Hapus sesi admin dan id_admin
-//     $request->session()->forget('admin');
-//     $request->session()->forget('id_admin');
+public function logout(Request $request)
+{
+    // Hapus sesi admin dan id_admin
+    $request->session()->forget('admin');
+    $request->session()->forget('id_admin');
 
-//     // Arahkan ke halaman login setelah logout
-//     return redirect('login');
-// }
+    // Arahkan ke halaman login setelah logout
+    return redirect('login');
+}
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cart;
 use App\Models\Admin;
 use App\Models\Barang;
 use Illuminate\Http\Request;
@@ -15,25 +16,26 @@ class HomeController extends Controller
 
     public function tampilBarang(){
         $barang = Barang::all();
+        return view('barang', compact('barang'));
 
-        //tambahkan variabel baru untuk menambahkan sesi
-        $sesi = session('admin');
-        $adm = session('id_admin');
+        // //tambahkan variabel baru untuk menambahkan sesi
+        // $sesi = session('admin');
+        // $adm = session('id_admin');
 
-        //cari apakah id_admin ada di database
-        $admin = Admin::where('id_admin', $adm)->first();
+        // //cari apakah id_admin ada di database
+        // $admin = Admin::where('id_admin', $adm)->first();
 
-        //buat kondisi
-        //jika sesi masih ada
-        if($sesi==true){
+        // //buat kondisi
+        // //jika sesi masih ada
+        // if($sesi==true){
 
-            //arahkan ke view barang
-         return view('barang', compact('barang','admin'));
-        }else{ //jika sudah habis
+        //     //arahkan ke view barang
+        //  return view('barang', compact('barang','admin'));
+        // }else{ //jika sudah habis
 
-            //arahkan kembali ke login
-            return redirect('login');
-        }
+        //     //arahkan kembali ke login
+        //     return redirect('login');
+        // }
     }
 
     public function tambahBarang(){
@@ -74,9 +76,9 @@ class HomeController extends Controller
         $barang->save();
 
         if($barang){
-            return redirect('barang');
+            return redirect('/');
         }else{
-            return redirect('barang')->with('error','Aduh, ada kesalahan!');
+            return redirect('/')->with('error','Aduh, ada kesalahan!');
         }
     }
 
@@ -158,6 +160,51 @@ class HomeController extends Controller
 
             //lalu kembalikan lagi ke daftar barang
             return redirect('barang');
+        }
+    }
+
+    public function Cart(){
+        //gabungkan tabel barang dan cart berdasarkan id barang
+        $cart = Cart::join('barang','barang.barang_id','=','cart.barang_id')
+        ->get();
+        return view('keranjang', compact('cart'));
+    }
+
+    function addToCart(Request $request){
+        $barang_id = $request->input('barang_id');
+        $qty = $request->input('qty');
+
+        //cek apakah barang yang dipilih sudah ada di keranjang
+        $cartCheck = Cart::where('barang_id',$barang_id)->first();
+
+        //jika sudah ada, maka update jumlahnya
+        if($cartCheck){
+            $cartCheck->qty = $cartCheck->qty + $qty;
+            $cartCheck->save();
+        }else{ //jika belum ada, tambahkan barang baru
+            $cart = new Cart;
+            $cart->barang_id = $barang_id;
+            $cart->qty = $qty;
+            $cart->save();
+        }
+
+        return redirect('cart'); //arahkan ke halaman cart
+    }
+
+    public function updateCart(Request $request)
+    {
+        $id_cart = $request->input('id_cart');
+        $qty = $request->input('qty');
+
+        $cart = Cart::where('id_cart',$id_cart)->first();
+
+        if ($cart) {
+            $cart->qty = $qty;
+            $cart->save();
+
+            return response()->json(['success' => true]);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Cart not found.']);
         }
     }
 

@@ -20,6 +20,13 @@ return new class extends Migration
             $table->text('foto_barang');
             $table->timestamps();
         });
+
+        Schema::create('cart', function (Blueprint $table) {
+            $table->increments('id_cart');
+            $table->integer('barang_id'); //disesuaikan dengan id barang kalian
+            $table->integer('qty'); //jumlah barang
+            $table->timestamps();
+        });
     }
 
     /**
@@ -28,5 +35,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('barang');
+        Schema::dropIfExists('cart');
     }
 };
