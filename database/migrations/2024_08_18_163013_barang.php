@@ -23,8 +23,17 @@ return new class extends Migration
 
         Schema::create('cart', function (Blueprint $table) {
             $table->increments('id_cart');
-            $table->integer('barang_id'); //disesuaikan dengan id barang kalian
-            $table->integer('qty'); //jumlah barang
+            $table->integer('barang_id');
+            $table->integer('qty');
+            $table->timestamps();
+        });
+
+        Schema::create('transaction', function (Blueprint $table) {
+            $table->increments('id_transaction');
+            $table->text('trans_code');
+            $table->integer('barang_id');
+            $table->integer('qty');
+            $table->integer('total');
             $table->timestamps();
         });
     }
@@ -36,5 +45,6 @@ return new class extends Migration
     {
         Schema::dropIfExists('barang');
         Schema::dropIfExists('cart');
+        Schema::dropIfExists('transaction');
     }
 };

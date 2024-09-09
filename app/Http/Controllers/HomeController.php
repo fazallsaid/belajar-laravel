@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\File;
 class HomeController extends Controller
 {
     public function index(){
-        return view('home');
+        return view('homee');
     }
 
     public function tampilBarang(){
@@ -208,5 +208,7 @@ class HomeController extends Controller
         }
     }
 
+    public function checkoutProcess(Request $request){
 
+    }
 }

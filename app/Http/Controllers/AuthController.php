@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Admin;
+use App\Models\Pengguna;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -13,24 +13,23 @@ class AuthController extends Controller
     }
 
     function login(Request $request){
-        //buat variabel untuk mendapatkan value dari form
         $email = htmlspecialchars($request->input('email'));
-        $password = htmlspecialchars($request->input('password'));
+        $pass = htmlspecialchars($request->input('password'));
 
-        //cek database
-        $user = Admin::where('email', $email)->first();
+        $user = Pengguna::where('email',$email)->first();
 
-        //buatlah kondisi
-        if($user && Hash::check($password, $user->password)){ //jika email dan password ada dan terenkripsi
-            //buat sesi
-            $request->session()->put('admin', true); //sesi pertama untuk menentukan apakah sesi masih valid atau tidak
-            $request->session()->put('id_admin', $user->id_admin); //sesi kedua untuk mengambil id login yang akan login
+        if($user && Hash::check($pass, $user->password)){
+            if($user->role == "admin"){
+                $request->session()->put('admin',true);
+                $request->session()->put('id_admin', $user->id_user);
 
-            //arahkan ke barang
-            return redirect('/');
-        }else{ //jika tidak ada
-            //berikan peringatan
-            echo "Email atau password Anda salah. Silakan diulang kembali.";
+                return redirect('dashboard');
+            }else{
+                $request->session()->put('customer', true);
+                $request->session()->put('id_customer', $user->id_user);
+
+                return redirect('home');
+            }
         }
     }
 
@@ -41,24 +40,22 @@ class AuthController extends Controller
     function reg(Request $request){
         //buat variabel untuk mendapatkan value dari form
         $email = htmlspecialchars($request->input('email'));
+        $username = htmlspecialchars($request->input('username'));
         $password = htmlspecialchars($request->input('password'));
-        $nama_admin = htmlspecialchars($request->input('nama_admin'));
+        $nama_user = htmlspecialchars($request->input('nama_user'));
+        $role = "customer";
 
         //enkripsi password agar tidak mudah dikenali
         $HashedPass = Hash::make($password);
 
         //inisialisasi model untuk proses register
-        $admin = new Admin;
-
-        //pasangkan variabel email, password dan nama admin
-        //sesuai dengan fieldnya
-        $admin->email = $email;
-
-        //khusus password, pasangkan dengan variabel HashedPass
-        $admin->password = $HashedPass;
-
-        $admin->nama_admin = $nama_admin;
-        $admin->save();
+        $user = new Pengguna;
+        $user->email = $email;
+        $user->username = $username;
+        $user->password = $HashedPass;
+        $user->nama_user = $nama_user;
+        $user->role = $role;
+        $user->save();
 
         //kembalikan ke halaman login
         return redirect('login');
@@ -66,11 +63,17 @@ class AuthController extends Controller
 
 public function logout(Request $request)
 {
-    // Hapus sesi admin dan id_admin
-    $request->session()->forget('admin');
-    $request->session()->forget('id_admin');
+    $usr = $request->session('customer');
+    $usrid = $request->session('id_customer');
 
-    // Arahkan ke halaman login setelah logout
-    return redirect('login');
+    if($usr && $usrid){
+        $request->session()->forget('customer');
+        $request->session()->forget('id_customer');
+    }else{
+        $request->session()->forget('admin');
+        $request->session()->forget('id_admin');
+    }
+
+    return redirect('/');
 }
 }
