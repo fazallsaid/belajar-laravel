@@ -16,6 +16,8 @@ Route::delete('/barang/delete/', [HomeController::class, 'hapusBarang']);
 Route::post('cart/process', [HomeController::class, 'addToCart']);
 Route::get('cart', [HomeController::class, 'Cart']);
 Route::post('cart/update', [HomeController::class, 'updateCart']);
+Route::get('order/confirm', [HomeController::class, 'orderConfirm']);
+Route::post('/order/process', [HomeController::class, 'checkoutProcess']);
 
 
 //tambahkan route login dan register

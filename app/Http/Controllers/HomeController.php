@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\Admin;
 use App\Models\Barang;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 
@@ -208,7 +209,33 @@ class HomeController extends Controller
         }
     }
 
-    public function checkoutProcess(Request $request){
+    public function checkoutProcess(){
+        $cart = Cart::join('barang','barang.barang_id','=','cart.barang_id')
+        ->select('cart.barang_id','barang.harga','barang.nama_barang','cart.qty')
+        ->get();
+        $trans_code = "TRX-" . mt_rand(100000, 999999);
+        $subtotal = 0;
+        $total = 0;
 
+        foreach($cart as $keranjang){
+            $transaction = new Transaction;
+            $transaction->trans_code = $trans_code;
+            $transaction->barang_id = $keranjang->barang_id;
+            $transaction->qty = $keranjang->qty;
+            $subtotal = $keranjang->harga * $keranjang->qty;
+            $total = $total =+ $subtotal;
+            $transaction->total = $total;
+            $transaction->save();
+        }
+
+        Cart::truncate();
+
+        return redirect('order/confirm');
+    }
+
+    public function orderConfirm(){
+        $trans = Transaction::join('barang','barang.barang_id','=','transaction.barang_id')
+        ->orderBy('trans_code', 'desc')->first();
+        return view('confirmOrder', compact('trans'));
     }
 }

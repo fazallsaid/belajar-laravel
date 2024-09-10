@@ -119,7 +119,7 @@
             </tfoot>
         </table>
         <div class="text-center mt-4">
-            <form action="{{url('cart/checkout')}}" method="POST">
+            <form action="{{url('/order/process')}}" method="POST">
                 @csrf
                 <button type="submit" class="btn btn-success">Checkout</button>
             </form>
