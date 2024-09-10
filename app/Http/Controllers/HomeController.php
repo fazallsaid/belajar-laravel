@@ -234,8 +234,11 @@ class HomeController extends Controller
     }
 
     public function orderConfirm(){
-        $trans = Transaction::join('barang','barang.barang_id','=','transaction.barang_id')
-        ->orderBy('trans_code', 'desc')->first();
+        $trans = Transaction::select('trans_code','nama_barang','qty','harga')
+        ->join('barang','barang.barang_id','=','transaction.barang_id')
+        ->orderBy('transaction.created_at')
+        ->get();
+        // dd($trans);
         return view('confirmOrder', compact('trans'));
     }
 }

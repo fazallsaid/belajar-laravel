@@ -99,15 +99,16 @@
                         $subtotal = 0;
                         @endphp
                         @foreach($trans as $transaction)
-                        <p class="card-text">{{$transaction->nama_barang ?? 'N/A'}} (x{{$transaction->qty ?? 'N/A'}})</p>
+                        <p class="card-text">{{$transaction->nama_barang}} (x{{$transaction->qty}})</p>
                         <hr/>
                         @php
-                            $subtotal = $transaction->harga ?? 'N/A' * $transaction->qty ?? 'N/A';
+                            $subtotal = $transaction->harga * $transaction->qty;
                             $total = $total =+ $subtotal;
                         @endphp
                         @endforeach
                         <hr/>
                         <h4>Total Pesanan: Rp {{ number_format($total, 0, ',', '.') }}</h4>
+                        
                         <button type="submit" class="btn btn-primary">Buat Pesanan</button>
                     </div>
                 </div>
